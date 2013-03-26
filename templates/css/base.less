@@ -1,0 +1,99 @@
+// Typography Dimensions
+@char: 14px;
+@vu: 24px;
+@gut: 12px;
+@col: 360px;
+@pad: 12px;
+
+// colors
+@color: #ff6600;
+@text: #222;
+@back: #fff;
+
+@import "fonts/OpenGeorgia.less";
+@import "grids.less";
+
+html {
+  .clear;
+}
+
+body {
+  .clear;
+  font-family: @sans;
+  font-size: @char;
+  line-height: @vu;
+  font-weight: 400;
+  color: @text;
+}
+
+#geom_background {
+  position: absolute;
+  z-index: -2;
+}
+
+.hoverlines {
+  line {
+    stroke: @color;
+    stroke-width: 3px;
+    opacity: 0.5;
+  }
+}
+
+.node {
+  /*background-color: #ddd;*/
+  /*color: @back;*/
+  float: left;
+  margin-left: @gut;
+  margin-top: @vu;
+  max-width: @col + (@pad * 2);
+  cursor: pointer;
+  .node-title {
+    max-height: @vu * 2;
+    padding-left: @pad;
+    padding-right: @pad;
+    overflow: hidden;
+  }
+  .node-details {
+    display: none;
+  }
+}
+
+.node.smalltopic {
+  .node-title {
+    font-family: @sans;
+    font-size: 1.2em;
+    font-variant: small-caps;
+    font-weight: 700;
+  }
+}
+
+.node.bigtopic {
+  .node-title {
+    font-family: @sans;
+    font-weight: 600;
+  }
+}
+
+.node.project {
+  .node-title {
+    font-style: italic;
+    font-weight: 300;
+  }
+}
+
+.node.person {
+  .node-title {
+    font-weight: 400;
+  }
+}
+
+.highlighted, .highlight-stay {
+  background-color: @color;
+}
+.targeted {
+  color: @back;
+  background-color: @text;
+}
+.selected {
+  .targeted;
+}
