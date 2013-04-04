@@ -41,7 +41,7 @@ def add_nodes(items):
 
 def build_graph_from_sheet():
     fname = "contributions.xlsx"
-    folder = "../data"
+    folder = "data"
     path = os.path.join(folder, fname)
     data = xls_to_dicts(path, "Sheet1")
     topics = (
@@ -78,12 +78,12 @@ def build_graph_from_sheet():
                         if d['name'] not in p['names']:
                             p['names'] += ' | ' + d['name']
     project_list = [projects[k] for k in projects]
-    writeToXls('../data/projects.xls', project_list)
+    writeToXls('data/projects.xls', project_list)
     print 'projects written'
 
 def newgraph():
     fname = "projects.xls"
-    folder = "../data"
+    folder = "data"
     path = os.path.join(folder, fname)
     projects = xls_to_dicts(path, "projects")
     people = xls_to_dicts(path, "people")
@@ -122,8 +122,8 @@ def newgraph():
 
 def print_nodes():
     import pystache
-    outpath = "versions/003/index.html"
-    skeletemplate = "versions/003/templates/skeletemplate.mustache"
+    outpath = "www/index.html"
+    skeletemplate = "templates/skeletemplate.mustache"
     nodes = g.nodes(data=True)
     g_guide = {}
     for n in nodes:
@@ -258,7 +258,7 @@ def buildVisGraph():
             "nodes": nodes,
             "links": edges,
             }
-    outpath = "/Users/benjamin/projects/mitdusp/src/versions/003/data.js"
+    outpath = "www/data.js"
     f = open(outpath, 'w')
     f.write('var graph = ')
     f.write(json.dumps(d, indent=2))
