@@ -129,7 +129,7 @@ def print_nodes():
     for n in nodes:
         g_guide[ n[0] ] = g.neighbors(n[0])
     nodes = [n[1] for n in nodes]
-    random.shuffle(nodes)
+    #random.shuffle(nodes)
     edges = g.edges()
     context = {
             'nodes':nodes,
