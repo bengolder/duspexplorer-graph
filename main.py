@@ -82,7 +82,7 @@ def build_graph_from_sheet():
     print 'projects written'
 
 def newgraph():
-    fname = "projects.xls"
+    fname = "projects2.xls"
     folder = "data"
     path = os.path.join(folder, fname)
     projects = xls_to_dicts(path, "projects")
@@ -144,10 +144,6 @@ def print_nodes():
 def graph_test():
     g.add_node('h')
     g['h']['i'] = 'illo'
-
-
-
-
 
 
 def build_graph():
