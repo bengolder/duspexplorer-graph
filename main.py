@@ -79,10 +79,6 @@ def newgraph():
             g.add_edge(idify(project['names']), idify(p))
             #print "linked %s to %s" % (project['names'], p)
 
-def load_locations():
-    """build location data"""
-    pass
-
 
 def print_nodes():
     import pystache
@@ -104,54 +100,6 @@ def print_nodes():
     f.write( pystache.render(template, context).encode('utf-8') )
     f.close()
 
-
-def graph_test():
-    g.add_node('h')
-    g['h']['i'] = 'illo'
-
-
-def build_graph():
-
-    folder = "/Users/benjamin/projects/mitdusp/data/"
-    fname = "graph_data.xlsx"
-
-
-    path = os.path.join(folder, fname)
-
-    sheets = [
-            "faculty",
-            "topics",
-            "affiliations",
-            "problems",
-            "methods",
-            ]
-
-    faculty = xls_to_dicts(path, "faculty")
-    topics = xls_to_dicts(path, "topics")
-    affiliations = xls_to_dicts(path, "affiliations")
-    problems = xls_to_dicts(path, "problems")
-    methods = xls_to_dicts(path, "methods")
-
-    add_nodes(faculty)
-    add_nodes(topics)
-
-    for d in simpl(affiliations):
-        if d['group'] not in g:
-            g.add_node( d['group'], **{
-                'name': d['group'],
-                'type': 'program group',
-                })
-        g.add_edge( d['name'], d['group'], **{
-            'level': d['level'],
-            })
-
-    for d in simpl(problems):
-        if d['target'] not in g:
-            g.add_node( d['target'], **{
-                'name': d['target'],
-                'type': 'topic',
-                })
-        g.add_edge( d['start'], d['target'])
 
 def getAtt(node, att):
     props = g[node]
@@ -227,30 +175,52 @@ def buildVisGraph():
     print 'done'
 
 
+
+def country_codes():
+    path = "./www/data/world-country-names.tsv"
+    f = open(path, "r")
+    lines = f.readlines()
+    f.close()
+    lines.pop(0)
+    book = {}
+    for line in lines:
+        bits = line.split('\t')
+        name = ' '.join(bits[1:]).strip()
+        code = int(bits[0])
+        book[name] = code
+    return book
+
+
 def testload_countries():
     sys.path.append("data")
     from international_projects import projects
     rows = open("./www/data/world-country-names.tsv", "r").readlines()
     countries = [' '.join(r.split()[1:]) for r in rows]
+    int_faculty = set()
+    p_fac = set()
+    book = country_codes()
     for p in projects:
-        if 'countries' not in p:
-            print p['title']
-        else:
-            for c in p['countries']:
-                if c not in countries:
-                    print p["title"],":", c
+        p['country_codes'] = []
+        for c in p['countries']:
+            code = book[c]
+            p['country_codes'].append(code)
+        fac = set(p['faculty'])
+        int_faculty.update(fac)
+    int_faculty = set([f.decode('utf-8') for f in int_faculty])
+    for name, node in g.nodes(data=True):
+        if node['type'] == 'person':
+            p_fac.add(node['name'])
+    out = open("./www/data/international_projects.js", "w")
+    out.write("var internationalProjects = %s;" % json.dumps(projects,
+        indent=2))
+    out.close()
 
-def getData():
-    #pprint( g.nodes() )
-    #pprint( g.edges() )
-    pass
 
-
-#build_graph()
 #buildVisGraph()
 #build_graph_from_sheet()
 #graph_test()
-#newgraph()
-#print_nodes()
+newgraph()
+print_nodes()
+country_codes()
 testload_countries()
 
