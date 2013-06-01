@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 from pprint import pprint
 import json
 import random
@@ -38,48 +39,6 @@ def idify(string):
 def add_nodes(items):
     for d in simpl(items):
         g.add_node(d['name'], **d)
-
-def build_graph_from_sheet():
-    fname = "contributions.xlsx"
-    folder = "data"
-    path = os.path.join(folder, fname)
-    data = xls_to_dicts(path, "Sheet1")
-    topics = (
-            "Building Infrastructure and Resource Effectiveness",
-            "Networking Smarter Cities",
-            "Matching Economic and Democratic Goals",
-            "Designing and Governing Adaptive Cities and Regions ",
-            "Developing Housing and Jobs in Healthy Communities",
-            "Praxis",
-            )
-    projects = {}
-    # each of these is s list of projects/publications for one person
-    # I therefore have enough info to make a ton of links
-    # show me all the projects. Are there any repeats?
-    for d in data:
-        for k in d:
-            if k in topics: # is it a topic?
-                project = d[k] # it's a project
-                if project and len(project) > 5:
-                    if project not in projects: #it's new
-                        p = {}
-                        p['names'] = d['name']
-                        p['detail'] = project
-                        for t in topics:
-                            if t == k:
-                                p[t] = 'x'
-                            else:
-                                p[t] = 'o'
-                        projects[project] = p
-                    else: #it exists
-                        print "found a repeat project"
-                        #set this category to x
-                        projects[project][k] = 'x'
-                        if d['name'] not in p['names']:
-                            p['names'] += ' | ' + d['name']
-    project_list = [projects[k] for k in projects]
-    writeToXls('data/projects.xls', project_list)
-    print 'projects written'
 
 def newgraph():
     fname = "projects3.xls"
@@ -119,6 +78,11 @@ def newgraph():
         else:
             g.add_edge(idify(project['names']), idify(p))
             #print "linked %s to %s" % (project['names'], p)
+
+def load_locations():
+    """build location data"""
+    pass
+
 
 def print_nodes():
     import pystache
@@ -263,7 +227,18 @@ def buildVisGraph():
     print 'done'
 
 
-
+def testload_countries():
+    sys.path.append("data")
+    from international_projects import projects
+    rows = open("./www/data/world-country-names.tsv", "r").readlines()
+    countries = [' '.join(r.split()[1:]) for r in rows]
+    for p in projects:
+        if 'countries' not in p:
+            print p['title']
+        else:
+            for c in p['countries']:
+                if c not in countries:
+                    print p["title"],":", c
 
 def getData():
     #pprint( g.nodes() )
@@ -275,7 +250,7 @@ def getData():
 #buildVisGraph()
 #build_graph_from_sheet()
 #graph_test()
-newgraph()
-print_nodes()
-
+#newgraph()
+#print_nodes()
+testload_countries()
 
